@@ -26,23 +26,32 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+            // disable CSRF for simplicity (good for learning apps)
             .csrf(csrf -> csrf.disable())
 
+            // public URLs
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/login", "/css/**").permitAll()
+                .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
             )
 
+            // login configuration
             .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/products", true)
+                .loginPage("/login")              // GET login page
+                .loginProcessingUrl("/login")     // POST login handled by Spring Security
+                .defaultSuccessUrl("/home", true) // after login
+                .failureUrl("/login?error")       // login failure
                 .permitAll()
             )
 
-            .logout(logout -> logout.permitAll());
+            // logout configuration
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            )
 
-        http.authenticationProvider(authenticationProvider());
+            // IMPORTANT: connect authentication provider
+            .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
