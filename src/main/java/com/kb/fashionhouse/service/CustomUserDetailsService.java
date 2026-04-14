@@ -17,20 +17,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String input) throws UsernameNotFoundException {
 
-        // try email first
+        // Try email first
         User user = userRepository.findByEmail(input).orElse(null);
 
-        // if not email, try mobile
+        // If not found, try mobile
         if (user == null) {
             user = userRepository.findByMobile(input).orElse(null);
         }
 
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User not found with email or mobile: " + input);
         }
 
+        // Use email as internal identifier (safe choice)
+        String loginId = (user.getEmail() != null) ? user.getEmail() : user.getMobile();
+
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),   // login identity
+                loginId,
                 user.getPassword(),
                 new ArrayList<>()
         );
