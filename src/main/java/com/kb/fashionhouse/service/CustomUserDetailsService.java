@@ -1,23 +1,40 @@
-@Override
-public UserDetails loadUserByUsername(String input) {
+package com.kb.fashionhouse.service;
 
-    User user = userRepository.findByUsername(input);
+import com.kb.fashionhouse.model.User;
+import com.kb.fashionhouse.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.Service;
 
-    if (user == null) {
-        user = userRepository.findByEmail(input);
+import java.util.Collections;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String input) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsername(input).orElse(null);
+
+        if (user == null) {
+            user = userRepository.findByEmail(input).orElse(null);
+        }
+
+        if (user == null) {
+            user = userRepository.findByMobile(input).orElse(null);
+        }
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found: " + input);
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                Collections.emptyList()
+        );
     }
-
-    if (user == null) {
-        user = userRepository.findByMobile(input);
-    }
-
-    if (user == null) {
-        throw new UsernameNotFoundException("User not found");
-    }
-
-    return new org.springframework.security.core.userdetails.User(
-            user.getUsername(),
-            user.getPassword(),
-            new ArrayList<>()
-    );
 }
