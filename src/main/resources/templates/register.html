@@ -9,21 +9,12 @@
 
 <form method="post" action="/register">
 
-    <!-- Email -->
-    <input type="email" name="email" placeholder="Email" required />
+    <!-- Email (optional) -->
+    <input type="email" name="email" placeholder="Email (optional)" />
     <br><br>
 
-    <!-- Mobile -->
-    <input type="text" id="mobile" name="mobile" placeholder="Mobile Number" required />
-    <br><br>
-
-    <!-- Send OTP button -->
-    <button type="button" onclick="sendOtp()">Send OTP</button>
-
-    <br><br>
-
-    <!-- OTP input -->
-    <input type="text" name="otp" placeholder="Enter OTP" required />
+    <!-- Mobile (optional) -->
+    <input type="text" name="mobile" placeholder="Mobile Number (optional)" />
     <br><br>
 
     <!-- Password -->
@@ -33,24 +24,6 @@
     <button type="submit">Register</button>
 
 </form>
-
-<script>
-function sendOtp() {
-    let mobile = document.getElementById("mobile").value;
-
-    if (!mobile) {
-        alert("Enter mobile number first");
-        return;
-    }
-
-    fetch("/send-otp?mobile=" + mobile, {
-        method: "GET"
-    })
-    .then(res => res.text())
-    .then(data => alert(data))
-    .catch(err => alert("Error sending OTP"));
-}
-</script>
 
 </body>
 </html>
