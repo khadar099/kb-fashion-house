@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(User user) {
 
-        // encrypt password before saving
+        // encrypt password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+
+        // NEW LOGIC: email OR mobile login support
+
+        return userRepository.findByEmail(username)
+                .orElse(userRepository.findByMobile(username)
+                .orElse(null));
     }
 }
