@@ -1,16 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+
+<h2>Register</h2>
+
 <form method="post" action="/register">
 
-    <input type="text" name="username" placeholder="Username"/>
+    <!-- Email -->
+    <input type="email" name="email" placeholder="Email" required />
     <br><br>
 
-    <input type="email" name="email" placeholder="Email"/>
+    <!-- Mobile -->
+    <input type="text" id="mobile" name="mobile" placeholder="Mobile Number" required />
     <br><br>
 
-    <input type="text" name="mobile" placeholder="Mobile Number"/>
+    <!-- Send OTP button -->
+    <button type="button" onclick="sendOtp()">Send OTP</button>
+
     <br><br>
 
-    <input type="password" name="password" placeholder="Password"/>
+    <!-- OTP input -->
+    <input type="text" name="otp" placeholder="Enter OTP" required />
+    <br><br>
+
+    <!-- Password -->
+    <input type="password" name="password" placeholder="Password" required />
     <br><br>
 
     <button type="submit">Register</button>
+
 </form>
+
+<script>
+function sendOtp() {
+    let mobile = document.getElementById("mobile").value;
+
+    if (!mobile) {
+        alert("Enter mobile number first");
+        return;
+    }
+
+    fetch("/send-otp?mobile=" + mobile, {
+        method: "GET"
+    })
+    .then(res => res.text())
+    .then(data => alert(data))
+    .catch(err => alert("Error sending OTP"));
+}
+</script>
+
+</body>
+</html>
