@@ -13,10 +13,6 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // TEMP STORAGE (for OTP - simple version)
-    private String generatedOtp;
-    private String tempMobile;
-
     // =========================
     // LOGIN PAGE
     // =========================
@@ -35,49 +31,27 @@ public class AuthController {
     }
 
     // =========================
-    // SEND OTP (NEW)
-    // =========================
-    @GetMapping("/send-otp")
-    @ResponseBody
-    public String sendOtp(@RequestParam String mobile) {
-
-        // generate simple OTP
-        generatedOtp = String.valueOf((int)(Math.random() * 9000) + 1000);
-        tempMobile = mobile;
-
-        // NOTE: integrate SMS API here later (Twilio / AWS SNS)
-
-        System.out.println("OTP for " + mobile + " is: " + generatedOtp);
-
-        return "OTP sent to " + mobile;
-    }
-
-    // =========================
-    // REGISTER USER WITH OTP
+    // REGISTER USER (NO OTP)
     // =========================
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user,
-                               @RequestParam String otp,
-                               Model model) {
+    public String registerUser(@ModelAttribute User user, Model model) {
 
-        // validate OTP
-        if (generatedOtp == null || !generatedOtp.equals(otp)) {
-            model.addAttribute("error", "Invalid OTP");
+        // validation: email OR mobile must be present
+        if ((user.getEmail() == null || user.getEmail().isEmpty()) &&
+            (user.getMobile() == null || user.getMobile().isEmpty())) {
+
+            model.addAttribute("error", "Email or Mobile is required");
             return "register";
         }
 
-        // validate mobile match
-        if (!user.getMobile().equals(tempMobile)) {
-            model.addAttribute("error", "Mobile mismatch");
+        // password check
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            model.addAttribute("error", "Password is required");
             return "register";
         }
 
         // save user
         userService.saveUser(user);
-
-        // clear OTP after use
-        generatedOtp = null;
-        tempMobile = null;
 
         return "redirect:/login?success";
     }
