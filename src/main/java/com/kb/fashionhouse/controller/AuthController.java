@@ -13,28 +13,71 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // ✅ LOGIN PAGE
+    // TEMP STORAGE (for OTP - simple version)
+    private String generatedOtp;
+    private String tempMobile;
+
+    // =========================
+    // LOGIN PAGE
+    // =========================
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
-    // ✅ REGISTER PAGE
+    // =========================
+    // REGISTER PAGE
+    // =========================
     @GetMapping("/register")
     public String registerPage(Model model) {
         model.addAttribute("user", new User());
         return "register";
     }
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, Model model) {
 
-        // optional: basic validation
-        if (user.getUsername() == null || user.getPassword() == null) {
-            model.addAttribute("error", "Username and Password required");
+    // =========================
+    // SEND OTP (NEW)
+    // =========================
+    @GetMapping("/send-otp")
+    @ResponseBody
+    public String sendOtp(@RequestParam String mobile) {
+
+        // generate simple OTP
+        generatedOtp = String.valueOf((int)(Math.random() * 9000) + 1000);
+        tempMobile = mobile;
+
+        // NOTE: integrate SMS API here later (Twilio / AWS SNS)
+
+        System.out.println("OTP for " + mobile + " is: " + generatedOtp);
+
+        return "OTP sent to " + mobile;
+    }
+
+    // =========================
+    // REGISTER USER WITH OTP
+    // =========================
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute User user,
+                               @RequestParam String otp,
+                               Model model) {
+
+        // validate OTP
+        if (generatedOtp == null || !generatedOtp.equals(otp)) {
+            model.addAttribute("error", "Invalid OTP");
             return "register";
         }
 
+        // validate mobile match
+        if (!user.getMobile().equals(tempMobile)) {
+            model.addAttribute("error", "Mobile mismatch");
+            return "register";
+        }
+
+        // save user
         userService.saveUser(user);
+
+        // clear OTP after use
+        generatedOtp = null;
+        tempMobile = null;
 
         return "redirect:/login?success";
     }
