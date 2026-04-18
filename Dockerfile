@@ -1,14 +1,14 @@
-# Use a lightweight Java runtime
-FROM eclipse-temurin:17-jdk-alpine
+# Use an official Java runtime as a parent image
+FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy your jar file
-COPY target/kb-fashion-house-0.0.1-SNAPSHOT.jar  kb-fashion-house-0.0.1-SNAPSHOT.jar
+# Copy the .jar file into the container at /app
+COPY target/kb-fashion-house-0.0.1-SNAPSHOT.jar  /app/welcome-page.jar
 
-# Expose port (match your Spring Boot port)
-EXPOSE 8181
+# Make the container's port 8080 available to the outside world
+EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java","-jar","kb-fashion-house-0.0.1-SNAPSHOT.jar"]
+# Run the jar file when the container starts
+ENTRYPOINT ["java", "-jar", "welcome-page.jar"]
