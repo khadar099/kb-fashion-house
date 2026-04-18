@@ -5,10 +5,10 @@ FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 # Copy your jar file
-COPY target/your-app.jar app.jar
+COPY target/ kb-fashion-house-0.0.1-SNAPSHOT.jar  app.jar
 
 # Expose port (match your Spring Boot port)
-EXPOSE 8080
+EXPOSE 8181
 
 # Run the application
 ENTRYPOINT ["java","-jar","app.jar"]
