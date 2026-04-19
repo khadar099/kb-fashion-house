@@ -250,6 +250,6 @@ POST http://<your-ec2-ip>:8181/api/auth/register
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Author Khadar
 
 Developed as part of a full-stack project using Spring Boot + Angular.
