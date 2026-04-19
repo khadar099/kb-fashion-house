@@ -17,8 +17,23 @@ public class ProductServiceImpl implements ProductService {
         products.add(new Product(3L, "Jacket", 1999));
     }
 
+    // =========================
+    // GET ALL PRODUCTS
+    // =========================
     @Override
     public List<Product> getAllProducts() {
         return products;
+    }
+
+    // =========================
+    // GET PRODUCT BY ID
+    // =========================
+    @Override
+    public Product getProductById(Long id) {
+
+        return products.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 }
