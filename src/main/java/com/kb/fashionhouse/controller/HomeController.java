@@ -1,13 +1,17 @@
 package com.kb.fashionhouse.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-public class HomeController {
+@RestController
+@RequestMapping("/api/home")
+@CrossOrigin(origins = "http://localhost:4200")
+public class HomeRestController {
 
-    @GetMapping("/home")
+    // =========================
+    // HOME API
+    // =========================
+    @GetMapping
     public String home() {
-        return "home";
+        return "Welcome to Fashion House API";
     }
 }
