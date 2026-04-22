@@ -4,7 +4,7 @@ metadata:
   name: kb-fashionhouse-backend
   namespace: dev
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: kb-fashionhouse-backend
