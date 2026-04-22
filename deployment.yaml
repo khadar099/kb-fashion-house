@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kb-fashionhouse-backend
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kb-fashionhouse-backend
+  template:
+    metadata:
+      labels:
+        app: kb-fashionhouse-backend
+    spec:
+      containers:
+        - name: kb-fashionhouse-backend
+          image: khadar3099/kb-fashionhouse-backend:01
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8181
