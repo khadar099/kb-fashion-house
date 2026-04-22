@@ -49,5 +49,32 @@ pipeline {
                     }
                 }
             }
+        stage('Deploy to EKS') {
+          steps {
+             script {
+                sh '''
+                     echo "Updating kubeconfig..."
+                     aws eks update-kubeconfig \
+                     --region ap-south-2 \
+                     --name kb-fashion-house-eks-cluster
+
+            echo "Checking cluster connectivity..."
+            kubectl get nodes
+
+            echo "Applying Kubernetes manifests..."
+            kubectl apply -f deployment.yaml
+            kubectl apply -f service.yaml
+
+            echo "Updating image with new version..."
+            kubectl set image deployment/kb-fashionhouse-backend \
+            kb-fashionhouse-backend=khadar3099/kb-fashion-house:v.${BUILD_NUMBER} \
+            -n dev
+
+            echo "Waiting for rollout to complete..."
+            kubectl rollout status deployment/kb-fashionhouse-backend -n dev
+            '''
         }
     }
+}
+    }
+}
