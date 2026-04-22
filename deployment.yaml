@@ -13,9 +13,14 @@ spec:
       labels:
         app: kb-fashionhouse-backend
     spec:
+      tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
+
       containers:
         - name: kb-fashionhouse-backend
-          image: khadar3099/kb-fashionhouse-backend:01
+          image: khadar3099/kb-fashion-house:v.4
           imagePullPolicy: Always
           ports:
             - containerPort: 8181
