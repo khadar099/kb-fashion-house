@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kb-fashionhouse-backend-service
+  namespace: dev
+spec:
+  selector:
+    app: kb-fashionhouse-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8181
+  type: LoadBalancer
